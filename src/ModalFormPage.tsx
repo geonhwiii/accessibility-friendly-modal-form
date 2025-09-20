@@ -1,6 +1,9 @@
-const ModalFormPage = () => {
-  /* 여기에 구현해 주세요 */
-  return <div>ModalFormPage</div>;
-};
+import { Button } from './ui';
 
-export default ModalFormPage;
+export default function ModalFormPage() {
+  return (
+    <div className="flex items-center justify-center h-dvh">
+      <Button>{'🚀 신청 폼 작성하기'}</Button>
+    </div>
+  );
+}

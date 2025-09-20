@@ -5,12 +5,19 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "check": "biome check"
+    "check": "biome check",
+    "format": "biome format ./src --write"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.1.13",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "modern-normalize": "^3.0.1",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "react-hook-form": "^7.63.0",
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss": "^4.1.13"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.2",
