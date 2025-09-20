@@ -27,15 +27,17 @@ export function ApplyFormModal() {
   };
 
   return (
-    <Modal>
-      <div className="p-6">
-        <h2 id="modal-title" className="text-xl font-semibold mb-2">신청 폼</h2>
+    <Modal.Root>
+      <Modal.Content>
+        <Modal.Title className="mb-2">신청 폼</Modal.Title>
+
         <p className="text-gray-600 text-sm mb-6">
           {"이메일과 FE 경력 연차 등 간단한 정보를 입력해주세요."}
         </p>
-        <p id="modal-description" className="sr-only">
+
+        <Modal.Description visuallyHidden>
           {"신청 폼을 작성해주세요. 이름, 이메일, FE 경력 연차, GitHub 링크를 입력하신 후 제출 버튼을 눌러주세요."}
-        </p>
+        </Modal.Description>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormInput
@@ -72,21 +74,21 @@ export function ApplyFormModal() {
             placeholder="https://github.com/username"
           />
 
-          <div className="flex gap-3 pt-4">
+          <div className="w-fit ml-auto flex justify-end items-center gap-3 pt-4">
             <Button
               type="button"
-              variant="outline"
+              variant="secondary"
               onClick={handleCancel}
               className="flex-1"
             >
-              {"취소"}
+              취소
             </Button>
             <Button type="submit" className="flex-1">
-              {"제출하기"}
+              제출하기
             </Button>
           </div>
         </form>
-      </div>
-    </Modal>
+      </Modal.Content>
+    </Modal.Root>
   );
 }

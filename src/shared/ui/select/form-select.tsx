@@ -1,5 +1,5 @@
 import { Controller, type Control, type FieldPath, type FieldValues } from 'react-hook-form';
-import { Select, type SelectProps } from './select';
+import { Select, type SelectProps } from '.';
 
 interface FormSelectProps<
   TFieldValues extends FieldValues = FieldValues,
