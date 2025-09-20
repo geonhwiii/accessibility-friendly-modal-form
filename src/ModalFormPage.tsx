@@ -1,11 +1,11 @@
 import { Button } from '@/shared/ui';
-import { openFormModal } from '@/shared/stores';
+import { openFormModal } from '@/features/apply-form/model/schema';
 import { ApplyFormModal } from '@/features/apply-form';
 
 export default function ModalFormPage() {
   const handleOpenModal = async () => {
     const result = await openFormModal();
-    console.log('Modal result:', result);
+    console.log('[Apply Form 제출 🚀]', result);
   };
 
   return (

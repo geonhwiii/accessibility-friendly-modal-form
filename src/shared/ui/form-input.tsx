@@ -27,7 +27,7 @@ export function FormInput<
       control={control}
       name={name}
       render={({ field, fieldState }) => (
-        <div className="space-y-2">
+        <div className="flex flex-col gap-1">
           {label && (
             <label htmlFor={field.name} className="text-sm font-medium text-gray-900">
               {label}

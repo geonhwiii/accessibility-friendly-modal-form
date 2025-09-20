@@ -1,21 +1,17 @@
 import { useSyncExternalStore } from 'react';
 
-interface ModalState {
+interface ModalState<T = unknown> {
   isOpen: boolean;
   modalId: string | null;
-  resolver: ((value: any) => void) | null;
-}
-
-export interface FormData {
-  name: string;
-  email: string;
-  message: string;
+  resolver: ((value: T | null) => void) | null;
+  triggerElement: HTMLElement | null;
 }
 
 const initialState: ModalState = {
   isOpen: false,
   modalId: null,
   resolver: null,
+  triggerElement: null,
 };
 
 let state = initialState;
@@ -33,31 +29,42 @@ export const modalStore = {
     return () => listeners.delete(listener);
   },
 
-  openModal: (modalId: string): Promise<FormData | null> => {
+  openModal: <T>(modalId: string, triggerElement?: HTMLElement): Promise<T | null> => {
     return new Promise((resolve) => {
       state = {
         isOpen: true,
         modalId,
-        resolver: resolve,
+        resolver: resolve as (value: unknown | null) => void,
+        triggerElement: triggerElement || document.activeElement as HTMLElement,
       };
       notifyListeners();
     });
   },
 
-  
   closeModal: () => {
     if (state.resolver) {
       state.resolver(null);
     }
+
+    const triggerElement = state.triggerElement;
+    if (triggerElement && document.contains(triggerElement)) {
+      setTimeout(() => triggerElement.focus(), 0);
+    }
+
     state = initialState;
     notifyListeners();
   },
 
-  
-  resolveModal: (data: FormData) => {
+  resolveModal: <T>(data: T) => {
     if (state.resolver) {
       state.resolver(data);
     }
+
+    const triggerElement = state.triggerElement;
+    if (triggerElement && document.contains(triggerElement)) {
+      setTimeout(() => triggerElement.focus(), 0);
+    }
+
     state = initialState;
     notifyListeners();
   },
@@ -65,8 +72,4 @@ export const modalStore = {
 
 export function useModalStore() {
   return useSyncExternalStore(modalStore.subscribe, modalStore.getSnapshot);
-}
-
-export async function openFormModal(): Promise<FormData | null> {
-  return modalStore.openModal('form-modal');
 }

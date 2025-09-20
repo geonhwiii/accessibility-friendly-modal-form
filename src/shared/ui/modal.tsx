@@ -11,13 +11,37 @@ export function Modal({ children }: ModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // ESC 키 처리
   useEffect(() => {
     if (!modalState.isOpen) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
+      const modalElement = modalRef.current;
+      if (!modalElement) return;
+
       if (event.key === 'Escape') {
         modalStore.closeModal();
+        return;
+      }
+
+      if (event.key === 'Tab') {
+        const focusableElements = modalElement.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        ) as NodeListOf<HTMLElement>;
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (event.shiftKey) {
+          if (document.activeElement === firstElement) {
+            event.preventDefault();
+            lastElement?.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            event.preventDefault();
+            firstElement?.focus();
+          }
+        }
       }
     };
 
@@ -25,7 +49,6 @@ export function Modal({ children }: ModalProps) {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [modalState.isOpen]);
 
-  // 배경 스크롤 방지
   useEffect(() => {
     if (!modalState.isOpen) return;
 
@@ -37,22 +60,25 @@ export function Modal({ children }: ModalProps) {
     };
   }, [modalState.isOpen]);
 
-  // 포커스 관리 (기본)
   useEffect(() => {
     if (!modalState.isOpen) return;
 
     const modalElement = modalRef.current;
     if (modalElement) {
-      // 모달 내 첫 번째 포커스 가능한 요소로 포커스 이동
-      const focusableElements = modalElement.querySelectorAll(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      );
-      const firstElement = focusableElements[0] as HTMLElement;
-      firstElement?.focus();
+      const titleElement = modalElement.querySelector('#modal-title') as HTMLElement;
+      if (titleElement) {
+        titleElement.setAttribute('tabindex', '-1');
+        titleElement.focus();
+      } else {
+        const focusableElements = modalElement.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        const firstElement = focusableElements[0] as HTMLElement;
+        firstElement?.focus();
+      }
     }
   }, [modalState.isOpen]);
 
-  // 배경 클릭 처리
   const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === overlayRef.current) {
       modalStore.closeModal();
@@ -64,15 +90,19 @@ export function Modal({ children }: ModalProps) {
   return createPortal(
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 modal-overlay-enter"
       onClick={handleOverlayClick}
       role="dialog"
       aria-modal="true"
+      aria-label="모달"
     >
       <div
         ref={modalRef}
-        className="relative w-full max-w-md mx-4 bg-white rounded-lg shadow-lg max-h-[90vh] overflow-y-auto"
+        className="relative w-full max-w-md mx-4 bg-white rounded-2xl shadow-lg max-h-[90vh] overflow-y-auto modal-content-enter"
         onClick={(e) => e.stopPropagation()}
+        role="document"
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
       >
         {children}
       </div>
